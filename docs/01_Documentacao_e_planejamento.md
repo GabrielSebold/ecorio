@@ -30,9 +30,9 @@ RF02 — Listar e buscar materiais por nome ou exemplos. Prioridade alta. Implem
 
 RF03 — Exibir orientação inicial ao selecionar um material. Prioridade alta. Implementado; conteúdo ainda sujeito à validação local.
 
-RF04 — Filtrar pontos por material e consultar seu detalhe. Prioridade alta. Implementado com dois pontos fictícios, sem endereço ou horário e com seleção por marcadores esquemáticos.
+RF04 — Filtrar pontos por material e consultar seu detalhe. Prioridade alta. Implementado com dois pontos fictícios, sem endereço ou horário, selecionáveis por marcadores sobre o mapa real.
 
-RF05 — Exibir pontos confirmados em mapa geográfico interativo, com coordenadas e informações verificadas. Prioridade alta. Planejado; o mapa esquemático atual não atende integralmente este requisito.
+RF05 — Exibir pontos confirmados em mapa geográfico interativo, com coordenadas e informações verificadas. Prioridade alta. Mapa real de Rio do Sul implementado com OpenStreetMap, zoom, movimentação e recentralização. A confirmação dos pontos reais continua pendente.
 
 RF06 — Consultar campanhas com data, local, descrição e organizador. Prioridade alta. Estrutura visual implementada; campanhas atuais são fictícias e sem data ou local.
 
@@ -42,7 +42,7 @@ RF08 — Informar fonte, data de verificação e responsável por cada dado publ
 
 RNF01 — Aplicação Flutter, com Android como plataforma inicial. Interface responsiva também executável no navegador para inspeção. Build Android ainda não verificado.
 
-RNF02 — Consulta básica sem login. Não coletar localização ou dados pessoais nesta etapa. RNF03 — Identificar dados de demonstração. RNF04 — Usar rótulos textuais e contraste legível; acessibilidade com leitor de tela e ampliação de texto precisa ser avaliada.
+RNF02 — Consulta básica sem login e sem solicitar localização do dispositivo. O mapa depende de internet; seu provedor recebe as requisições de rede dos tiles. RNF03 — Identificar dados de demonstração. RNF04 — Usar rótulos textuais e contraste legível; acessibilidade com leitor de tela e ampliação de texto precisa ser avaliada.
 
 Fora do escopo inicial: pagamentos, chat, marketplace, gestão de frota, rotas de coleta em tempo real e cadastro público sem moderação.
 
@@ -51,11 +51,11 @@ Fora do escopo inicial: pagamentos, chat, marketplace, gestão de frota, rotas d
 
 Fluxo principal: Início → Guia → Busca → Detalhe do material → Pontos filtrados. Fluxo complementar: Início → Campanhas → Marcar ou desmarcar interesse na sessão.
 
-Estrutura atual: lib/main.dart inicia o aplicativo; lib/ecorio_app.dart contém a interface, dados locais de demonstração e estados de navegação, busca, filtro, marcador e interesse. Não há servidor, autenticação, banco de dados ou consumo de API nesta versão.
+Estrutura atual: lib/main.dart inicia o aplicativo; lib/ecorio_app.dart contém a interface e os estados; lib/collection_map.dart integra flutter_map, latlong2 e url_launcher ao mapa real de Rio do Sul. Não há servidor próprio, autenticação ou banco de dados. Os tiles são carregados por HTTPS do OpenStreetMap, com atribuição visível e cache padrão da biblioteca.
 
 Modelo lógico proposto para evolução: Material(id, nome, exemplos, orientação); PontoColeta(id, nome, endereço, latitude, longitude, horário, fonte, verificadoEm); PontoMaterial(pontoId, materialId); Campanha(id, título, descrição, data, local, organizador, fonte, verificadoEm); Lembrete(id, campanhaId, dataHora, ativo). Relação N:N entre material e ponto; cada campanha pode possuir lembretes locais.
 
-Organização futura: separar telas, modelos e repositórios; carregar uma base local revisada; escolher biblioteca de mapa e provedor compatíveis com as plataformas; implementar notificações locais e persistência. A escolha de serviços depende de viabilidade, limites de uso e revisão da equipe.
+Organização futura: separar telas, modelos e repositórios; carregar uma base local revisada com coordenadas confirmadas; implementar notificações locais e persistência. O mapa atual usa flutter_map 8.3.2 e tiles do OpenStreetMap, conforme a política do provedor, sem download em lote.
 
 CA01 — Uma busca por “pilhas” deve exibir somente a categoria correspondente. CA02 — Uma busca inexistente deve exibir mensagem de ausência de resultado. CA03 — Abrir o detalhe e consultar pontos deve aplicar o material selecionado.
 
@@ -63,7 +63,7 @@ CA04 — Um filtro sem ponto correspondente deve mostrar mensagem explícita. CA
 
 Critérios para a etapa final: mapa com posições verificadas; fontes e datas de atualização; campanhas reais aprovadas; lembrete persistente testado; validação da navegação com usuários externos; execução em dispositivo Android.
 
-Limitações conhecidas: base fictícia, ausência de coordenadas e integração cartográfica, interesse volátil, nenhuma notificação, conteúdo preliminar e ausência de validação comunitária. Os prints registram a versão inicial real executada no navegador, sem representar um aplicativo Android já instalado.
+Limitações conhecidas: base fictícia de pontos e campanhas, coordenadas demonstrativas sem serviço confirmado, interesse volátil, nenhuma notificação e ausência de validação comunitária. O mapa geográfico já está integrado e depende de internet. Os prints são da versão executada no navegador, sem representar um aplicativo Android já instalado.
 
 
 ## 4. Planejamento e divisão proposta de tarefas
@@ -72,11 +72,11 @@ A divisão abaixo é uma proposta para revisão pelos dois integrantes. Não rep
 
 Gabriel Sebold dos Santos: guia de materiais, busca, organização inicial da documentação e contato com moradores. Leonardo Casa Nova: consulta de pontos, avaliação do mapa, campanhas e avaliação de notificações. Ambos: requisitos, pesquisa de fontes, revisão de código, testes e apresentação.
 
-02–03/11 — Entrega 1: revisar documentação e protótipo; executar a versão inicial; conferir prints; criar e publicar repositório GitHub; inserir URL real nos documentos; enviar os arquivos solicitados.
+02–03/11 — Entrega 1: revisar documentação e protótipo com mapa real; conferir prints e código no GitHub; enviar os arquivos solicitados. O repositório já foi criado e a URL está incluída nesta documentação.
 
 04–10/11 — Escuta da comunidade: entrevistar moradores e ao menos um interlocutor da coleta/meio ambiente, conforme disponibilidade; registrar necessidades e revisar requisitos. Estimativa: 2 h de planejamento/análise e 4 h de desenvolvimento.
 
-11–17/11 — Confirmar dados e fontes; integrar mapa geográfico e detalhe dos pontos. Estimativa: 1 h de análise e 10 h de desenvolvimento.
+11–17/11 — Confirmar dados e fontes; cadastrar pontos reais no mapa e aperfeiçoar seus detalhes. Estimativa: 1 h de análise e 10 h de desenvolvimento.
 
 18–24/11 — Implementar campanhas e lembretes persistentes; testar estados de erro, permissão negada e ausência de dados. Estimativa: 1 h de análise e 10 h de desenvolvimento.
 
@@ -116,8 +116,10 @@ Referência pública consultada em 02/11/2026: Instituto do Meio Ambiente de San
 
 Fonte local para pesquisa e validação futura: Prefeitura de Rio do Sul — portal institucional, seção de notícias e serviços de coleta. https://www.riodosul.sc.gov.br/ . Nenhum endereço, horário ou campanha municipal foi importado para o protótipo.
 
-Repositório GitHub: PENDENTE — criar/publicar o repositório e substituir este campo pela URL real antes da entrega. Não foi gerado link fictício.
+Fontes cartográficas: OpenStreetMap — https://www.openstreetmap.org/copyright e https://operations.osmfoundation.org/policies/tiles/ . Centro de referência de Rio do Sul: CISAMAVI — https://cisamavi.sc.gov.br/municipios-consorciados/municipios/rio-do-sul . Consulta em 02/11/2026. Os marcadores demonstrativos não representam locais de coleta reais.
 
-Checklist: [ ] equipe revisar e aprovar o conteúdo; [ ] conferir o aplicativo e os prints; [ ] criar repositório GitHub e enviar o código; [ ] atualizar URL nesta documentação e no relatório; [ ] conferir instruções da atividade no Classroom; [ ] anexar documentação, relatório de uma página, prints e link; [ ] conferir o envio por todos os integrantes conforme orientação do professor.
+Repositório GitHub: https://github.com/GabrielSebold/ecorio . Os PDFs de origem e a pasta de referências auxiliares não integram o repositório.
+
+Checklist: [ ] equipe revisar e aprovar o conteúdo; [ ] conferir o aplicativo e os prints; [ ] verificar acesso ao repositório; [ ] conferir instruções da atividade no Classroom; [ ] anexar documentação, relatório de uma página, prints e link; [ ] conferir o envio por todos os integrantes conforme orientação do professor.
 
 Arquivos de evidência: prints/01_inicio.png, 02_guia.png, 03_pontos.png e 04_campanhas.png. As capturas devem acompanhar esta entrega e representam somente o estágio atual.

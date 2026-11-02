@@ -1,9 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ecorio/ecorio_app.dart';
 
 void main() {
-  testWidgets('Busca por material e filtro sem ponto cadastrado', (tester) async {
+  testWidgets('Busca por material e filtro sem ponto cadastrado', (
+    tester,
+  ) async {
     await tester.pumpWidget(const EcoRioApp());
     await tester.tap(find.text('Guia'));
     await tester.pumpAndSettle();
@@ -17,7 +19,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('Nenhum ponto cadastrado'), findsOneWidget);
   });
-  testWidgets('Interesse em campanha pode ser marcado e desmarcado', (tester) async {
+  testWidgets('Interesse em campanha pode ser marcado e desmarcado', (
+    tester,
+  ) async {
     await tester.pumpWidget(const EcoRioApp());
     await tester.tap(find.text('Campanhas'));
     await tester.pumpAndSettle();

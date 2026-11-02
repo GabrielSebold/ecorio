@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'collection_map.dart';
+
 const green = Color(0xFF17634A);
 const guides = <(String, String, IconData)>[
   ('Papel', 'Jornais, caixas e papelão', Icons.description_outlined),
@@ -304,7 +306,7 @@ class _EcoHomeState extends State<EcoHome> {
           'Primeira versão da consulta por tipo de material.',
         ),
         notice(
-          'Dados fictícios. Mapa esquemático, sem coordenadas reais. Integração geográfica prevista para a próxima etapa.',
+          'Mapa real de Rio do Sul. Os marcadores são exemplos fictícios, sem serviço de coleta confirmado. Não se desloque até esses locais.',
         ),
         DropdownButtonFormField<String>(
           initialValue: category,
@@ -320,52 +322,9 @@ class _EcoHomeState extends State<EcoHome> {
         ),
         const SizedBox(height: 20),
         if (available) ...[
-          Container(
-            height: 205,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE6EDD9),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: LayoutBuilder(
-              builder: (context, box) => Stack(
-                children: [
-                  Positioned(
-                    left: box.maxWidth * .44,
-                    top: -25,
-                    child: Transform.rotate(
-                      angle: .4,
-                      child: Container(
-                        width: 45,
-                        height: 300,
-                        color: const Color(0xFFB8DCE1),
-                      ),
-                    ),
-                  ),
-                  const Positioned(
-                    left: 16,
-                    bottom: 12,
-                    child: Text(
-                      'MAPA ESQUEMÁTICO · DEMONSTRAÇÃO',
-                      style: TextStyle(fontSize: 10, color: green),
-                    ),
-                  ),
-                  for (int i = 0; i < 2; i++)
-                    Positioned(
-                      left: box.maxWidth * (i == 0 ? .15 : .68),
-                      top: i == 0 ? 35 : 95,
-                      child: IconButton.filledTonal(
-                        onPressed: () => setState(() => selectedPoint = i),
-                        icon: Icon(
-                          Icons.location_on,
-                          size: selectedPoint == i ? 38 : 28,
-                        ),
-                        tooltip: 'Selecionar ponto ${i + 1}',
-                      ),
-                    ),
-                ],
-              ),
-            ),
+          CollectionMap(
+            selectedPoint: selectedPoint,
+            onSelectPoint: (value) => setState(() => selectedPoint = value),
           ),
           const SizedBox(height: 16),
           Card(

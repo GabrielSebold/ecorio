@@ -1,4 +1,6 @@
 # Miscellaneous
+_referencias/
+referencias/
 *.class
 *.log
 *.pyc
